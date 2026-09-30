@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mission Briefing: SJ Infra Dinner & Dance 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1430; --ink2:#151e42; --ink3:#1f2a57;
+  --gold:#d9b45b; --gold-dim:#8f7a45; --champ:#f1e7d0; --muted:#aab1ca;
+  --red:#e4473f; --red-lt:#ff7d74; --green:#3dbe7a;
+  --display:Limelight,"Bodoni 72",Georgia,serif;
+  --body:Outfit,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100%;
+  background-color:var(--ink);
+  background-image:
+    radial-gradient(120% 50% at 50% 0%,rgba(217,180,91,.10),transparent 65%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Cg fill='%230d1430' stroke='%23d9b45b' stroke-opacity='.11'%3E%3Ccircle cx='24' cy='0' r='24'/%3E%3Ccircle cx='24' cy='0' r='16'/%3E%3Ccircle cx='24' cy='0' r='8'/%3E%3Ccircle cx='0' cy='12' r='24'/%3E%3Ccircle cx='0' cy='12' r='16'/%3E%3Ccircle cx='0' cy='12' r='8'/%3E%3Ccircle cx='48' cy='12' r='24'/%3E%3Ccircle cx='48' cy='12' r='16'/%3E%3Ccircle cx='48' cy='12' r='8'/%3E%3Ccircle cx='24' cy='24' r='24'/%3E%3Ccircle cx='24' cy='24' r='16'/%3E%3Ccircle cx='24' cy='24' r='8'/%3E%3C/g%3E%3C/svg%3E");
+  color:var(--champ);
+  font:400 17px/1.55 var(--body);
+}
+[hidden]{display:none !important}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.15}
+p{margin:0 0 14px}
+a{color:var(--gold);text-underline-offset:3px}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* Layout: phone column, with QR card beside it on wide screens */
+.stage{display:flex;justify-content:center;align-items:flex-start;gap:48px;padding:0}
+.phone{width:100%;max-width:440px;min-width:0}
+.qr-panel{display:none}
+@media (min-width:900px){
+  .stage{padding:32px 24px}
+  .phone{border:1px solid rgba(217,180,91,.28);background:rgba(13,20,48,.86);min-height:calc(100dvh - 64px)}
+  .qr-panel{display:block;position:sticky;top:32px;width:290px}
+}
+
+/* QR table-card preview */
+.qr-card{background:var(--champ);color:var(--ink);padding:26px 24px 22px;text-align:center;
+  clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px)}
+.qr-card h2{font-size:24px;margin-bottom:6px}
+.qr-card .sub{font-size:14px;margin:0 0 16px;color:#3a4266}
+.qr-card svg{display:block;width:100%;height:auto}
+.qr-note{margin:16px 4px 0;font-size:14px;color:var(--muted)}
+
+/* Incoming call */
+.call{position:relative;overflow:hidden;text-align:center;
+  min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:56px 24px 44px}
+@media (min-width:900px){.call{min-height:calc(100dvh - 66px)}}
+.call::before,.burst::before{content:"";position:absolute;left:-30%;right:-30%;bottom:-20%;height:110%;pointer-events:none;
+  background:repeating-conic-gradient(from -90deg at 50% 100%,rgba(217,180,91,.15) 0 3deg,transparent 3deg 9deg);
+  -webkit-mask-image:radial-gradient(closest-side at 50% 100%,#000,transparent);
+  mask-image:radial-gradient(closest-side at 50% 100%,#000,transparent)}
+.call>*{position:relative}
+.call .ring-text{color:var(--muted);font-size:16px;margin:0 0 8px}
+.call h1{font-size:clamp(34px,10vw,44px);margin-bottom:8px}
+.call .event{color:var(--gold);margin:0;font-size:17px}
+.avatar{position:relative;width:132px;height:132px;border-radius:50%;background:var(--ink2);border:2px solid var(--gold);
+  display:grid;place-items:center;font:400 46px/1 var(--display);color:var(--gold)}
+.avatar::before,.avatar::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--gold);
+  animation:ring 2.4s ease-out infinite;pointer-events:none}
+.avatar::after{animation-delay:1.2s}
+@keyframes ring{from{transform:scale(1);opacity:.7}to{transform:scale(1.9);opacity:0}}
+.callbtns{display:flex;gap:72px;justify-content:center}
+.cb{display:grid;justify-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-size:15px;color:var(--champ)}
+.disc{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.disc svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.disc.no{background:var(--red)}
+.disc.no svg{transform:rotate(135deg)}
+.disc.yes{background:var(--green);animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+/* Sticky status bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;padding:10px 16px;
+  background:rgba(13,20,48,.95);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(217,180,91,.3)}
+.chips{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.chip{display:flex;align-items:center;gap:6px;padding:4px 11px;border:1px solid var(--gold-dim);border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip.on{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:600}
+.reportrow{margin-top:10px}
+
+/* Buttons */
+.btn{display:block;width:100%;padding:13px 18px;border:0;border-radius:999px;background:var(--gold);color:var(--ink);font-weight:600;font-size:17px;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;color:var(--champ);border:1px solid var(--gold-dim)}
+
+/* Content */
+.brief{padding:30px 20px 64px}
+.brief h1{font-size:clamp(32px,9vw,40px);margin-bottom:6px}
+.brief .event{color:var(--gold);margin-bottom:22px}
+.mission-list{margin:0 0 16px;padding:0;list-style:none}
+.mission-list li{padding:10px 0;border-top:1px solid rgba(217,180,91,.22)}
+.mission-list li:last-child{border-bottom:1px solid rgba(217,180,91,.22)}
+.warn{color:var(--muted)}
+.rule{height:14px;position:relative;margin:38px 0}
+.rule::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent)}
+.rule::after{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;background:var(--gold);transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 0 6px var(--ink)}
+.mission h2{font-size:clamp(26px,7.4vw,32px);margin-bottom:14px}
+.mission h3{font-size:20px;margin:24px 0 6px;color:var(--gold)}
+.rules{margin:0 0 6px;padding-left:20px}
+.rules li{margin-bottom:8px}
+
+/* Photo picks */
+.picks{list-style:none;margin:6px 0 0;padding:0}
+.pick{position:relative;display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid rgba(217,180,91,.22);cursor:pointer}
+.picks li:last-child .pick{border-bottom:1px solid rgba(217,180,91,.22)}
+.pick input{position:absolute;opacity:0;width:26px;height:26px;margin:0}
+.pick .box{flex:none;width:26px;height:26px;margin-top:1px;border:2px solid var(--gold);display:grid;place-items:center;transform:rotate(45deg) scale(.78)}
+.pick .box svg{width:18px;height:18px;fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:rotate(-45deg)}
+.pick input:checked+.box{background:var(--gold)}
+.pick input:checked+.box svg{opacity:1}
+.pick input:focus-visible+.box{outline:2px solid var(--champ);outline-offset:4px}
+.pick input:disabled+.box{border-color:var(--gold-dim)}
+.pick.dim{opacity:.45;cursor:default}
+.count{margin:14px 0 0;color:var(--gold);font-weight:500}
+
+/* Clues */
+.clues{list-style:none;margin:18px 0 0;padding:0}
+.clue{display:flex;gap:14px;padding:18px 0;border-top:1px solid rgba(217,180,91,.22)}
+.clue:last-child{border-bottom:1px solid rgba(217,180,91,.22)}
+.n{flex:none;width:38px;height:38px;display:grid;place-items:center;background:var(--gold);color:var(--ink);font:400 16px/1 var(--display);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.cbody{flex:1;min-width:0}
+.cat{color:var(--muted);font-size:14px;margin:0 0 4px}
+.q{margin:0}
+.rebus{font-size:34px;line-height:1.2;margin:8px 0 0;letter-spacing:.08em}
+.ans{display:flex;gap:10px;margin-top:12px;align-items:stretch}
+input[type=text]{flex:1;min-width:0;padding:11px 12px;font-size:16px;background:var(--ink2);border:1px solid var(--gold-dim);border-radius:8px;color:var(--champ)}
+input[type=text]::placeholder{color:#7f88a8}
+.letter{flex:none;width:48px;display:grid;place-items:center;border:1px solid var(--gold);border-radius:8px;font:400 24px/1 var(--display);color:var(--gold)}
+
+/* Password panel */
+.panel{margin-top:22px;padding:22px 20px;background:var(--ink2);
+  clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0 calc(100% - 14px),0 14px)}
+.panel h3{margin:0 0 4px;font-size:20px}
+.panel p{color:var(--muted);font-size:15px}
+.slots{display:flex;gap:8px;align-items:flex-end;margin:6px 0 20px}
+.slot{width:34px;height:44px;border-bottom:2px solid var(--gold);display:grid;place-items:center;font:400 24px/1 var(--display);color:var(--champ)}
+.slot.pre{border-color:transparent;color:var(--gold-dim);width:auto;margin-right:4px}
+.pwrow{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.pwrow .pre{font:400 22px/1 var(--display);color:var(--gold)}
+.pwrow input{letter-spacing:.2em;text-transform:uppercase}
+.fb{min-height:1.6em;margin:12px 0 0;font-size:15px}
+.fb.bad{color:var(--red-lt)}
+.fb.good{color:var(--gold)}
+.foot{margin-top:34px;color:var(--muted);font-size:15px}
+.linkbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:14px}
+
+/* Mission complete */
+.done{position:fixed;inset:0;z-index:60;overflow:auto;background:var(--ink);
+  padding:calc(env(safe-area-inset-top,0px) + 28px) 24px calc(env(safe-area-inset-bottom,0px) + 28px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
+.done.burst::before{bottom:-10%}
+.done>*{position:relative;width:100%;max-width:400px}
+.stamp{width:auto !important;font:400 clamp(34px,11vw,50px)/1.1 var(--display);color:var(--red-lt);border:4px double var(--red-lt);padding:12px 24px;transform:rotate(-5deg);animation:stampIn .5s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes stampIn{from{transform:rotate(-5deg) scale(1.8);opacity:0}to{transform:rotate(-5deg) scale(1);opacity:1}}
+.stats{display:grid;gap:8px;text-align:left;margin:6px 0;padding:14px 16px;background:var(--ink2);border:1px solid var(--gold-dim)}
+.stats div{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+.stats span:first-child{color:var(--muted)}
+.done .who{text-align:center;flex:none}
+.done .stamp{margin-bottom:10px}
+
+@media (prefers-reduced-motion:reduce){
+  .avatar::before,.avatar::after,.disc.yes,.stamp{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="phone">
+    <!-- Incoming call -->
+    <section class="call" id="call" aria-labelledby="callTitle">
+      <div>
+        <p class="ring-text">Ring ring. Mission incoming.</p>
+        <h1 id="callTitle">Mission Control</h1>
+        <p class="event">SJ Infra Dinner &amp; Dance 2026</p>
+      </div>
+      <div class="avatar" aria-hidden="true">MC</div>
+      <div>
+        <p id="callMsg" class="ring-text" role="status" style="min-height:1.6em;margin-bottom:22px"></p>
+        <div class="callbtns">
+          <button class="cb" id="decline" type="button"><span class="disc no"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>Decline</button>
+          <button class="cb" id="accept" type="button"><span class="disc yes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>Accept mission</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status bar -->
+    <div class="bar" id="bar" hidden>
+      <div class="chips">
+        <span class="chip" id="chipPhotos">📸 0/3</span>
+        <span class="chip" id="chipPw">🔐 Locked</span>
+        <span class="chip" id="chipTime">⏱ 00:00</span>
+      </div>
+      <div class="reportrow" id="reportRow" hidden>
+        <button class="btn" id="reportBtn" type="button">Report to Game Master</button>
+      </div>
+    </div>
+
+    <!-- Briefing -->
+    <main class="brief" id="brief" hidden>
+      <h1 id="briefTitle" tabindex="-1">Welcome, Agent.</h1>
+      <p class="event">SJ Infra Dinner &amp; Dance 2026</p>
+      <p>Intelligence has identified you as a suitable candidate for a special operation. Your mission tonight is simple, yet critical:</p>
+      <ul class="mission-list">
+        <li><a href="#m1">Mission 1: Photo challenge</a></li>
+        <li><a href="#m2">Mission 2: Crack the password</a></li>
+      </ul>
+      <p>Complete both assignments and report to the Game Masters to verify your success. A reward awaits all successful agents.</p>
+      <p class="warn">But be warned: rewards are limited, and time is running out.</p>
+
+      <div class="rule" aria-hidden="true"></div>
+
+      <section class="mission" id="m1" aria-labelledby="m1t">
+        <h2 id="m1t">Mission 1: Photo challenge</h2>
+        <p>Gather photographic evidence from the field.</p>
+        <ul class="rules">
+          <li>Choose <strong>any 3</strong> of the 5 photo missions below.</li>
+          <li>Take 1 photo as proof for each mission.</li>
+          <li>All photos must be taken during tonight's event.</li>
+          <li>This is an individual challenge, but you are welcome to involve other guests in your photos.</li>
+          <li>Show your 3 photos from your phone to a Game Master for verification.</li>
+        </ul>
+        <h3>Photo missions</h3>
+        <ul class="picks" id="picks"></ul>
+        <p class="count" id="count" role="status"></p>
+      </section>
+
+      <div class="rule" aria-hidden="true"></div>
+
+      <section class="mission" id="m2" aria-labelledby="m2t">
+        <h2 id="m2t">Mission 2: Crack the password</h2>
+        <p>Solve the clues and uncover the secret password.</p>
+        <ul class="rules">
+          <li>Solve all 6 questions.</li>
+          <li>Take the <strong>first letter</strong> of each answer.</li>
+          <li>Arrange the letters in order to reveal the password.</li>
+        </ul>
+        <ol class="clues" id="clues"></ol>
+
+        <div class="panel">
+          <h3>Your letters</h3>
+          <div class="slots" id="slots" aria-live="polite"></div>
+          <h3>Enter the password</h3>
+          <p>The password starts with SJ, followed by the 6 letters.</p>
+          <div class="pwrow">
+            <span class="pre" aria-hidden="true">SJ</span>
+            <input type="text" id="pw" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="6 letters" aria-label="Password letters after SJ">
+          </div>
+          <button class="btn" id="pwBtn" type="button">Check password</button>
+          <p class="fb" id="pwFb" role="status"></p>
+        </div>
+      </section>
+
+      <p class="foot">Report to a Game Master as soon as both missions are done. Rewards are limited.</p>
+      <p class="foot"><button class="linkbtn" id="reset" type="button">Reset this demo</button></p>
+    </main>
+  </div>
+</div>
+
+<!-- Mission complete -->
+<div class="done burst" id="done" role="dialog" aria-modal="true" aria-labelledby="doneTitle" hidden>
+  <div class="stamp" id="doneTitle">Mission complete</div>
+  <p>Show this screen to a Game Master to collect your reward. Have your 3 photos ready in your gallery.</p>
+  <div class="stats">
+    <div><span>Time on mission</span><span id="dElapsed">00:00</span></div>
+    <div><span>Time now</span><span id="dClock">00:00:00</span></div>
+  </div>
+  <input type="text" id="agent" class="who" maxlength="30" placeholder="Your name (optional)" aria-label="Your name">
+  <button class="btn ghost" id="back" type="button">Back to briefing</button>
+</div>
+
+<script>
+(function(){
+  var KEY='sjdd26-mission-demo-v1';
+  var PW=String.fromCharCode(73,77,80,65,67,84);
+  var PHOTOS=[
+    'Capture a photo that would make everyone burst out laughing.',
+    'Pretend you\u2019re a celebrity surrounded by photographers. Give us your best \u201cI totally wasn\u2019t expecting this\u201d look.',
+    'Find someone whose outfit deserves its own magazine cover. Strike a pose together like you\u2019re attending the year\u2019s most glamorous event!',
+    'Recreate a movie scene without saying a word. Can your photo tell the story?',
+    'Take a selfie with at least 5 smiling guests.'
+  ];
+  var CLUES=[
+    ['🎥','Hollywood','Which 2010 science-fiction movie, directed by Christopher Nolan, involves entering people\u2019s dreams?'],
+    ['🧸','Animation','Which Disney movie follows a young Polynesian girl who sets out across the ocean?'],
+    ['🌏','Asian cinema','Which South Korean movie became the first non-English-language film to win the Academy Award for Best Picture?'],
+    ['🧸','Animation','Which Disney animated movie features a street-smart young man and a magical Genie?'],
+    ['🇰🇷','K-drama / K-movie','Which Korean drama tells the story of a South Korean heiress who accidentally lands in North Korea after a paragliding accident?'],
+    ['🌍','International cinema','Guess the movie title based on the emojis.','🚢 👩‍❤️‍👨 🧊 🌊']
+  ];
+  function fresh(){return {accepted:false,start:0,photos:[],answers:['','','','','',''],pwOk:false,doneAt:0,agent:''};}
+  var S=fresh();
+  try{var raw=localStorage.getItem(KEY);if(raw){S=Object.assign(fresh(),JSON.parse(raw));}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+  function $(id){return document.getElementById(id);}
+
+  var call=$('call'),bar=$('bar'),brief=$('brief'),done=$('done');
+
+  // Build photo picks
+  var picks=$('picks');
+  PHOTOS.forEach(function(t,i){
+    var li=document.createElement('li');
+    var lab=document.createElement('label');lab.className='pick';
+    var inp=document.createElement('input');inp.type='checkbox';inp.dataset.i=i;
+    var box=document.createElement('span');box.className='box';
+    box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    var txt=document.createElement('span');txt.textContent=t;
+    lab.appendChild(inp);lab.appendChild(box);lab.appendChild(txt);li.appendChild(lab);picks.appendChild(li);
+    inp.addEventListener('change',function(){
+      var idx=S.photos.indexOf(i);
+      if(inp.checked&&idx<0&&S.photos.length<3){S.photos.push(i);}
+      if(!inp.checked&&idx>=0){S.photos.splice(idx,1);}
+      save();render();
+    });
+  });
+
+  // Build clues
+  var clues=$('clues');
+  CLUES.forEach(function(c,i){
+    var li=document.createElement('li');li.className='clue';
+    var html='<span class="n" aria-hidden="true">'+(i+1)+'</span><div class="cbody"><p class="cat">'+c[0]+' '+c[1]+'</p><p class="q">'+c[2]+'</p>';
+    if(c[3]){html+='<p class="rebus" aria-label="Emoji clue">'+c[3]+'</p>';}
+    html+='<div class="ans"><input type="text" data-i="'+i+'" placeholder="Your answer" autocomplete="off" autocapitalize="words" spellcheck="false" aria-label="Answer to question '+(i+1)+'"><span class="letter" data-l="'+i+'" aria-hidden="true"></span></div></div>';
+    li.innerHTML=html;clues.appendChild(li);
+  });
+  Array.prototype.forEach.call(clues.querySelectorAll('input'),function(inp){
+    inp.addEventListener('input',function(){S.answers[+inp.dataset.i]=inp.value;save();render();});
+  });
+
+  function firstLetter(v){var m=(v||'').match(/[A-Za-z0-9]/);return m?m[0].toUpperCase():'';}
+  function mmss(ms){var s=Math.max(0,Math.floor(ms/1000));var m=Math.floor(s/60);s=s%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
+  function hms(d){function p(n){return (n<10?'0':'')+n;}return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
+
+  function render(){
+    // photos
+    var n=S.photos.length;
+    Array.prototype.forEach.call(picks.querySelectorAll('input'),function(inp){
+      var i=+inp.dataset.i,on=S.photos.indexOf(i)>=0;
+      inp.checked=on;
+      var block=!on&&n>=3;
+      inp.disabled=block;
+      inp.closest('.pick').classList.toggle('dim',block);
+    });
+    $('count').textContent=n>=3?'All 3 photos taken. Have them ready to show a Game Master.':n+' of 3 photos taken.';
+    $('chipPhotos').textContent='📸 '+n+'/3';
+    $('chipPhotos').classList.toggle('on',n>=3);
+    // letters
+    var slots='<span class="slot pre">SJ</span>';
+    for(var i=0;i<6;i++){
+      var L=firstLetter(S.answers[i]);
+      clues.querySelector('[data-l="'+i+'"]').textContent=L;
+      slots+='<span class="slot">'+L+'</span>';
+    }
+    $('slots').innerHTML=slots;
+    // password
+    $('chipPw').textContent=S.pwOk?'🔓 Cracked':'🔐 Locked';
+    $('chipPw').classList.toggle('on',S.pwOk);
+    $('pw').disabled=S.pwOk;$('pwBtn').disabled=S.pwOk;
+    // ready
+    var ready=n>=3&&S.pwOk;
+    if(ready&&!S.doneAt){S.doneAt=Date.now();save();}
+    $('reportRow').hidden=!ready;
+    tick();
+  }
+
+  function tick(){
+    if(!S.accepted)return;
+    var end=S.doneAt||Date.now();
+    var el=mmss(end-S.start);
+    $('chipTime').textContent='⏱ '+el;
+    $('dElapsed').textContent=el;
+    $('dClock').textContent=hms(new Date());
+  }
+  setInterval(tick,1000);
+
+  function showBrief(focus){
+    call.hidden=true;bar.hidden=false;brief.hidden=false;
+    window.scrollTo(0,0);
+    if(focus){$('briefTitle').focus({preventScroll:true});}
+  }
+
+  $('accept').addEventListener('click',function(){
+    S.accepted=true;S.start=Date.now();save();
+    showBrief(true);render();
+  });
+  $('decline').addEventListener('click',function(){
+    $('callMsg').textContent='Declining isn\u2019t an option, Agent. Tap Accept mission.';
+  });
+
+  $('pwBtn').addEventListener('click',checkPw);
+  $('pw').addEventListener('keydown',function(e){if(e.key==='Enter'){checkPw();}});
+  function checkPw(){
+    var v=$('pw').value.replace(/\s+/g,'').toUpperCase().replace(/^SJ/,'');
+    var fb=$('pwFb');
+    if(v.length<6){fb.className='fb bad';fb.textContent='Enter all 6 letters after SJ.';return;}
+    if(v===PW){
+      S.pwOk=true;save();
+      fb.className='fb good';
+      fb.textContent=S.photos.length>=3?'Access granted.':'Access granted. Now finish 3 photo missions to unlock your report.';
+      render();
+    }else{
+      fb.className='fb bad';
+      fb.textContent='Access denied. Take the first letter of each answer, in order from 1 to 6.';
+    }
+  }
+
+  function openDone(){
+    done.hidden=false;
+    document.body.style.overflow='hidden';
+    tick();
+    $('back').focus();
+  }
+  function closeDone(){done.hidden=true;document.body.style.overflow='';$('reportBtn').focus();}
+  $('reportBtn').addEventListener('click',openDone);
+  $('back').addEventListener('click',closeDone);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!done.hidden){closeDone();}});
+  $('agent').addEventListener('input',function(){S.agent=$('agent').value;save();});
+
+  $('reset').addEventListener('click',function(){
+    S=fresh();
+    try{localStorage.removeItem(KEY);}catch(e){}
+    Array.prototype.forEach.call(clues.querySelectorAll('input'),function(i){i.value='';});
+    $('pw').value='';$('pwFb').textContent='';$('pwFb').className='fb';$('agent').value='';
+    $('callMsg').textContent='';
+    bar.hidden=true;brief.hidden=true;done.hidden=true;call.hidden=false;
+    document.body.style.overflow='';
+    render();window.scrollTo(0,0);
+  });
+
+  // restore
+  Array.prototype.forEach.call(clues.querySelectorAll('input'),function(inp){inp.value=S.answers[+inp.dataset.i]||'';});
+  $('agent').value=S.agent||'';
+  if(S.pwOk){$('pw').value=PW;$('pwFb').className='fb good';$('pwFb').textContent='Access granted.';}
+  if(S.accepted){showBrief(false);}
+  render();
+})();
+</script>
+</body>
+</html>
