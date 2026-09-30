@@ -37,23 +37,13 @@ a{color:var(--gold);text-underline-offset:3px}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 
-/* Layout: phone column, with QR card beside it on wide screens */
+/* Layout: single phone-width column */
 .stage{display:flex;justify-content:center;align-items:flex-start;gap:48px;padding:0}
 .phone{width:100%;max-width:440px;min-width:0}
-.qr-panel{display:none}
 @media (min-width:900px){
   .stage{padding:32px 24px}
   .phone{border:1px solid rgba(217,180,91,.28);background:rgba(13,20,48,.86);min-height:calc(100dvh - 64px)}
-  .qr-panel{display:block;position:sticky;top:32px;width:290px}
 }
-
-/* QR table-card preview */
-.qr-card{background:var(--champ);color:var(--ink);padding:26px 24px 22px;text-align:center;
-  clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px)}
-.qr-card h2{font-size:24px;margin-bottom:6px}
-.qr-card .sub{font-size:14px;margin:0 0 16px;color:#3a4266}
-.qr-card svg{display:block;width:100%;height:auto}
-.qr-note{margin:16px 4px 0;font-size:14px;color:var(--muted)}
 
 /* Incoming call */
 .call{position:relative;overflow:hidden;text-align:center;
