@@ -127,19 +127,14 @@ button,input{font:inherit;color:inherit}
 .cat{color:var(--muted);font-size:14px;margin:0 0 4px}
 .q{margin:0}
 .rebus{font-size:34px;line-height:1.2;margin:8px 0 0;letter-spacing:.08em}
-.ans{display:flex;gap:10px;margin-top:12px;align-items:stretch}
 input[type=text]{flex:1;min-width:0;padding:11px 12px;font-size:16px;background:var(--ink2);border:1px solid var(--gold-dim);border-radius:8px;color:var(--champ)}
 input[type=text]::placeholder{color:#7f88a8}
-.letter{flex:none;width:48px;display:grid;place-items:center;border:1px solid var(--gold);border-radius:8px;font:400 24px/1 var(--display);color:var(--gold)}
 
 /* Password panel */
 .panel{margin-top:22px;padding:22px 20px;background:var(--ink2);
   clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0 calc(100% - 14px),0 14px)}
 .panel h3{margin:0 0 4px;font-size:20px}
 .panel p{color:var(--muted);font-size:15px}
-.slots{display:flex;gap:8px;align-items:flex-end;margin:6px 0 20px}
-.slot{width:34px;height:44px;border-bottom:2px solid var(--gold);display:grid;place-items:center;font:400 24px/1 var(--display);color:var(--champ)}
-.slot.pre{border-color:transparent;color:var(--gold-dim);width:auto;margin-right:4px}
 .pwrow{display:flex;gap:10px;align-items:center;margin-bottom:12px}
 .pwrow .pre{font:400 22px/1 var(--display);color:var(--gold)}
 .pwrow input{letter-spacing:.2em;text-transform:uppercase}
@@ -239,14 +234,13 @@ input[type=text]::placeholder{color:#7f88a8}
           <li>Solve all 6 questions.</li>
           <li>Take the <strong>first letter</strong> of each answer.</li>
           <li>Arrange the letters in order to reveal the password.</li>
+          <li>Tell a Game Master the password. You can also enter it below to check it.</li>
         </ul>
         <ol class="clues" id="clues"></ol>
 
         <div class="panel">
-          <h3>Your letters</h3>
-          <div class="slots" id="slots" aria-live="polite"></div>
-          <h3>Enter the password</h3>
-          <p>The password starts with SJ, followed by the 6 letters.</p>
+          <h3>Check the password</h3>
+          <p>Take the first letter of each answer, in order from 1 to 6. The password is SJ followed by those 6 letters.</p>
           <div class="pwrow">
             <span class="pre" aria-hidden="true">SJ</span>
             <input type="text" id="pw" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="6 letters" aria-label="Password letters after SJ">
@@ -257,7 +251,7 @@ input[type=text]::placeholder{color:#7f88a8}
       </section>
 
       <p class="foot">Report to a Game Master as soon as both missions are done. Rewards are limited.</p>
-      <p class="foot"><button class="linkbtn" id="reset" type="button">Reset this demo</button></p>
+      <p class="foot" id="resetWrap" hidden><button class="linkbtn" id="reset" type="button">Reset progress on this phone</button></p>
     </main>
   </div>
 </div>
@@ -293,7 +287,7 @@ input[type=text]::placeholder{color:#7f88a8}
     ['🇰🇷','K-drama / K-movie','Which Korean drama tells the story of a South Korean heiress who accidentally lands in North Korea after a paragliding accident?'],
     ['🌍','International cinema','Guess the movie title based on the emojis.','🚢 👩‍❤️‍👨 🧊 🌊']
   ];
-  function fresh(){return {accepted:false,start:0,photos:[],answers:['','','','','',''],pwOk:false,doneAt:0,agent:''};}
+  function fresh(){return {accepted:false,start:0,photos:[],pwOk:false,doneAt:0,agent:''};}
   var S=fresh();
   try{var raw=localStorage.getItem(KEY);if(raw){S=Object.assign(fresh(),JSON.parse(raw));}}catch(e){}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -325,14 +319,10 @@ input[type=text]::placeholder{color:#7f88a8}
     var li=document.createElement('li');li.className='clue';
     var html='<span class="n" aria-hidden="true">'+(i+1)+'</span><div class="cbody"><p class="cat">'+c[0]+' '+c[1]+'</p><p class="q">'+c[2]+'</p>';
     if(c[3]){html+='<p class="rebus" aria-label="Emoji clue">'+c[3]+'</p>';}
-    html+='<div class="ans"><input type="text" data-i="'+i+'" placeholder="Your answer" autocomplete="off" autocapitalize="words" spellcheck="false" aria-label="Answer to question '+(i+1)+'"><span class="letter" data-l="'+i+'" aria-hidden="true"></span></div></div>';
+    html+='</div>';
     li.innerHTML=html;clues.appendChild(li);
   });
-  Array.prototype.forEach.call(clues.querySelectorAll('input'),function(inp){
-    inp.addEventListener('input',function(){S.answers[+inp.dataset.i]=inp.value;save();render();});
-  });
 
-  function firstLetter(v){var m=(v||'').match(/[A-Za-z0-9]/);return m?m[0].toUpperCase():'';}
   function mmss(ms){var s=Math.max(0,Math.floor(ms/1000));var m=Math.floor(s/60);s=s%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
   function hms(d){function p(n){return (n<10?'0':'')+n;}return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
 
@@ -349,14 +339,6 @@ input[type=text]::placeholder{color:#7f88a8}
     $('count').textContent=n>=3?'All 3 photos taken. Have them ready to show a Game Master.':n+' of 3 photos taken.';
     $('chipPhotos').textContent='📸 '+n+'/3';
     $('chipPhotos').classList.toggle('on',n>=3);
-    // letters
-    var slots='<span class="slot pre">SJ</span>';
-    for(var i=0;i<6;i++){
-      var L=firstLetter(S.answers[i]);
-      clues.querySelector('[data-l="'+i+'"]').textContent=L;
-      slots+='<span class="slot">'+L+'</span>';
-    }
-    $('slots').innerHTML=slots;
     // password
     $('chipPw').textContent=S.pwOk?'🔓 Cracked':'🔐 Locked';
     $('chipPw').classList.toggle('on',S.pwOk);
@@ -424,7 +406,6 @@ input[type=text]::placeholder{color:#7f88a8}
   $('reset').addEventListener('click',function(){
     S=fresh();
     try{localStorage.removeItem(KEY);}catch(e){}
-    Array.prototype.forEach.call(clues.querySelectorAll('input'),function(i){i.value='';});
     $('pw').value='';$('pwFb').textContent='';$('pwFb').className='fb';$('agent').value='';
     $('callMsg').textContent='';
     bar.hidden=true;brief.hidden=true;done.hidden=true;call.hidden=false;
@@ -433,8 +414,8 @@ input[type=text]::placeholder{color:#7f88a8}
   });
 
   // restore
-  Array.prototype.forEach.call(clues.querySelectorAll('input'),function(inp){inp.value=S.answers[+inp.dataset.i]||'';});
   $('agent').value=S.agent||'';
+  if(/[?&]reset/.test(location.search)){$('resetWrap').hidden=false;}
   if(S.pwOk){$('pw').value=PW;$('pwFb').className='fb good';$('pwFb').textContent='Access granted.';}
   if(S.accepted){showBrief(false);}
   render();
