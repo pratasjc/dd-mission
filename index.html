@@ -126,6 +126,7 @@ button,input{font:inherit;color:inherit}
 .pick.dim{opacity:.45;cursor:default}
 .shot{padding:0 0 16px 40px}
 .thumb{display:block;width:100%;max-width:260px;max-height:190px;object-fit:cover;margin:0 0 10px;border:1px solid var(--gold-dim)}
+.shotbtns{display:flex;flex-wrap:wrap;gap:10px}
 .btn.shotbtn{display:inline-block;width:auto;padding:9px 20px;font-size:15px}
 .shotmsg{margin:8px 0 0;font-size:14px;color:var(--red-lt)}
 .count{margin:14px 0 0;color:var(--gold);font-weight:500}
@@ -314,6 +315,7 @@ input[type=text]::placeholder{color:#7f88a8}
 (function(){
   var KEY='sjdd26-mission-demo-v1';
   var PW=String.fromCharCode(73,77,80,65,67,84);
+  var ALLOW_GALLERY=true;   // set to false to require the camera (no gallery picks)
   var PHOTOS=[
     'Capture a photo that would make everyone burst out laughing.',
     'Pretend you\u2019re a celebrity surrounded by photographers. Give us your best \u201cI totally wasn\u2019t expecting this\u201d look.',
@@ -367,12 +369,17 @@ input[type=text]::placeholder{color:#7f88a8}
 
     var shot=document.createElement('div');shot.className='shot';shot.hidden=true;
     var thumb=document.createElement('img');thumb.className='thumb';thumb.alt='Your photo for this mission';thumb.hidden=true;
-    var file=document.createElement('input');file.type='file';file.accept='image/*';file.hidden=true;
-    var btn=document.createElement('button');btn.type='button';btn.className='btn ghost shotbtn';btn.textContent='Add photo';
+    var btns=document.createElement('div');btns.className='shotbtns';
+    var cam=document.createElement('button');cam.type='button';cam.className='btn shotbtn';cam.textContent='Take photo';
+    var gal=document.createElement('button');gal.type='button';gal.className='btn ghost shotbtn';gal.textContent='From gallery';gal.hidden=!ALLOW_GALLERY;
+    var camIn=document.createElement('input');camIn.type='file';camIn.accept='image/*';camIn.hidden=true;
+    camIn.setAttribute('capture',/selfie/i.test(t)?'user':'environment');
+    var galIn=document.createElement('input');galIn.type='file';galIn.accept='image/*';galIn.hidden=true;
     var msg=document.createElement('p');msg.className='shotmsg';msg.setAttribute('role','status');
-    shot.appendChild(thumb);shot.appendChild(btn);shot.appendChild(file);shot.appendChild(msg);
+    btns.appendChild(cam);btns.appendChild(gal);
+    shot.appendChild(thumb);shot.appendChild(btns);shot.appendChild(camIn);shot.appendChild(galIn);shot.appendChild(msg);
     li.appendChild(shot);picks.appendChild(li);
-    rows[i]={inp:inp,lab:lab,shot:shot,thumb:thumb,btn:btn,msg:msg};
+    rows[i]={inp:inp,lab:lab,shot:shot,thumb:thumb,cam:cam,gal:gal,msg:msg};
 
     inp.addEventListener('change',function(){
       var idx=S.photos.indexOf(i);
@@ -380,16 +387,19 @@ input[type=text]::placeholder{color:#7f88a8}
       if(!inp.checked&&idx>=0){S.photos.splice(idx,1);delete S.imgs[i];}
       save();render();
     });
-    btn.addEventListener('click',function(){file.click();});
-    file.addEventListener('change',function(){
-      var f=file.files&&file.files[0];file.value='';
+    function take(el){
+      var f=el.files&&el.files[0];el.value='';
       if(!f)return;
       msg.textContent='Adding photo...';
       shrink(f,function(err,url){
         if(err){msg.textContent='Could not read that photo. Please try another one.';return;}
         S.imgs[i]=url;msg.textContent='';save();render();
       });
-    });
+    }
+    cam.addEventListener('click',function(){camIn.click();});
+    gal.addEventListener('click',function(){galIn.click();});
+    camIn.addEventListener('change',function(){take(camIn);});
+    galIn.addEventListener('change',function(){take(galIn);});
   });
 
   // Build clues
@@ -415,8 +425,8 @@ input[type=text]::placeholder{color:#7f88a8}
       r.shot.hidden=!on;
       r.thumb.hidden=!img;
       if(img){r.thumb.src=img;}
-      r.btn.textContent=img?'Replace photo':'Add photo';
-      r.btn.disabled=S.pwOk;
+      r.cam.textContent=img?'Retake photo':'Take photo';
+      r.cam.disabled=S.pwOk;r.gal.disabled=S.pwOk;
     });
     $('count').textContent=n>=3?'All 3 photos added.':n+' of 3 photos added.';
     $('chipPhotos').textContent='\uD83D\uDCF8 '+n+'/3';
