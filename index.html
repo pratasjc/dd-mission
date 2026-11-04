@@ -113,8 +113,9 @@ button,input{font:inherit;color:inherit}
 
 /* Photo picks */
 .picks{list-style:none;margin:6px 0 0;padding:0}
-.pick{position:relative;display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid rgba(217,180,91,.22);cursor:pointer}
-.picks li:last-child .pick{border-bottom:1px solid rgba(217,180,91,.22)}
+.picks li{border-top:1px solid rgba(217,180,91,.22)}
+.picks li:last-child{border-bottom:1px solid rgba(217,180,91,.22)}
+.pick{position:relative;display:flex;gap:14px;align-items:flex-start;padding:14px 0;cursor:pointer}
 .pick input{position:absolute;opacity:0;width:26px;height:26px;margin:0}
 .pick .box{flex:none;width:26px;height:26px;margin-top:1px;border:2px solid var(--gold);display:grid;place-items:center;transform:rotate(45deg) scale(.78)}
 .pick .box svg{width:18px;height:18px;fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:rotate(-45deg)}
@@ -123,7 +124,12 @@ button,input{font:inherit;color:inherit}
 .pick input:focus-visible+.box{outline:2px solid var(--champ);outline-offset:4px}
 .pick input:disabled+.box{border-color:var(--gold-dim)}
 .pick.dim{opacity:.45;cursor:default}
+.shot{padding:0 0 16px 40px}
+.thumb{display:block;width:100%;max-width:260px;max-height:190px;object-fit:cover;margin:0 0 10px;border:1px solid var(--gold-dim)}
+.btn.shotbtn{display:inline-block;width:auto;padding:9px 20px;font-size:15px}
+.shotmsg{margin:8px 0 0;font-size:14px;color:var(--red-lt)}
 .count{margin:14px 0 0;color:var(--gold);font-weight:500}
+.privacy{margin:6px 0 0;color:var(--muted);font-size:14px}
 
 /* Clues */
 .clues{list-style:none;margin:18px 0 0;padding:0}
@@ -168,9 +174,15 @@ input[type=text]::placeholder{color:#7f88a8}
 .stats span:first-child{color:var(--muted)}
 .picked{text-align:left}
 .picked-label{margin:0 0 10px;color:var(--gold);font-size:14px;font-weight:500;letter-spacing:.03em}
-.picked ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.picked ol{list-style:none;margin:0;padding:0;display:grid;gap:20px}
 .picked li{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.45}
 .picked .dia{width:24px;height:24px;font-size:12px}
+.picked .pi{flex:1;min-width:0}
+.proof{display:block;width:100%;max-height:200px;object-fit:cover;margin-top:8px;border:1px solid var(--gold-dim);cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:80;background:rgba(5,8,20,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.lightbox img{max-width:100%;max-height:calc(100% - 72px);object-fit:contain}
+.lightbox .btn{width:160px}
 .done .stamp{margin-bottom:10px}
 
 @media (prefers-reduced-motion:reduce){
@@ -235,14 +247,15 @@ input[type=text]::placeholder{color:#7f88a8}
         <p>Gather photographic evidence from the field.</p>
         <ul class="rules">
           <li>Choose <strong>any 3</strong> of the 5 photo missions below.</li>
-          <li>Take 1 photo as proof for each mission.</li>
+          <li>Take 1 photo as proof for each mission and add it to the page.</li>
           <li>All photos must be taken during tonight's event.</li>
           <li>This is an individual challenge, but you are welcome to involve other guests in your photos.</li>
-          <li>Show your 3 photos from your phone to a Game Master for verification.</li>
+          <li>Your photos will be shown to a Game Master on the final screen for verification.</li>
         </ul>
         <h3>Photo missions</h3>
         <ul class="picks" id="picks"></ul>
         <p class="count" id="count" role="status"></p>
+        <p class="privacy">Photos stay on your phone and are not uploaded anywhere.</p>
       </section>
 
       <div class="rule" aria-hidden="true"></div>
@@ -281,15 +294,20 @@ input[type=text]::placeholder{color:#7f88a8}
 <!-- Mission complete -->
 <div class="done burst" id="done" role="dialog" aria-modal="true" aria-labelledby="doneTitle" hidden>
   <div class="stamp" id="doneTitle">Mission complete</div>
-  <p>Show this screen to a Game Master to collect your reward. Have your 3 photos ready in your gallery.</p>
+  <p>Show this screen to a Game Master to collect your reward.</p>
   <div class="stats">
     <div><span>Time on mission</span><span id="dElapsed">00:00</span></div>
   </div>
   <div class="picked">
-    <p class="picked-label">Photo missions chosen</p>
+    <p class="picked-label">Photo evidence</p>
     <ol id="dPicks"></ol>
   </div>
   <button class="btn ghost" id="back" type="button">Back to briefing</button>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo" hidden>
+  <img id="lbImg" alt="">
+  <button class="btn ghost" id="lbClose" type="button">Close</button>
 </div>
 
 <script>
@@ -311,16 +329,33 @@ input[type=text]::placeholder{color:#7f88a8}
     ['🇰🇷','K-drama / K-movie','Which Korean drama tells the story of a South Korean heiress who accidentally lands in North Korea after a paragliding accident?'],
     ['🌍','International cinema','Guess the movie title based on the emojis.','🚢 👩‍❤️‍👨 🧊 🌊']
   ];
-  function fresh(){return {accepted:false,start:0,photos:[],pwOk:false,doneAt:0};}
+  function fresh(){return {accepted:false,start:0,photos:[],imgs:{},pwOk:false,doneAt:0};}
   var S=fresh();
   try{var raw=localStorage.getItem(KEY);if(raw){S=Object.assign(fresh(),JSON.parse(raw));}}catch(e){}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+  function save(){
+    try{localStorage.setItem(KEY,JSON.stringify(S));}
+    catch(e){try{localStorage.setItem(KEY,JSON.stringify(Object.assign({},S,{imgs:{}})));}catch(e2){}}
+  }
+  function nPhotos(){return S.photos.filter(function(i){return S.imgs[i];}).length;}
+  function shrink(file,cb){
+    var u=URL.createObjectURL(file),im=new Image();
+    im.onload=function(){
+      var k=Math.min(1,900/Math.max(im.naturalWidth,im.naturalHeight));
+      var c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      URL.revokeObjectURL(u);
+      try{cb(null,c.toDataURL('image/jpeg',0.72));}catch(e){cb(e);}
+    };
+    im.onerror=function(){URL.revokeObjectURL(u);cb(new Error('decode'));};
+    im.src=u;
+  }
   function $(id){return document.getElementById(id);}
 
   var call=$('call'),bar=$('bar'),brief=$('brief'),done=$('done');
 
   // Build photo picks
   var picks=$('picks');
+  var rows=[];
   PHOTOS.forEach(function(t,i){
     var li=document.createElement('li');
     var lab=document.createElement('label');lab.className='pick';
@@ -328,12 +363,32 @@ input[type=text]::placeholder{color:#7f88a8}
     var box=document.createElement('span');box.className='box';
     box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
     var txt=document.createElement('span');txt.textContent=t;
-    lab.appendChild(inp);lab.appendChild(box);lab.appendChild(txt);li.appendChild(lab);picks.appendChild(li);
+    lab.appendChild(inp);lab.appendChild(box);lab.appendChild(txt);li.appendChild(lab);
+
+    var shot=document.createElement('div');shot.className='shot';shot.hidden=true;
+    var thumb=document.createElement('img');thumb.className='thumb';thumb.alt='Your photo for this mission';thumb.hidden=true;
+    var file=document.createElement('input');file.type='file';file.accept='image/*';file.hidden=true;
+    var btn=document.createElement('button');btn.type='button';btn.className='btn ghost shotbtn';btn.textContent='Add photo';
+    var msg=document.createElement('p');msg.className='shotmsg';msg.setAttribute('role','status');
+    shot.appendChild(thumb);shot.appendChild(btn);shot.appendChild(file);shot.appendChild(msg);
+    li.appendChild(shot);picks.appendChild(li);
+    rows[i]={inp:inp,lab:lab,shot:shot,thumb:thumb,btn:btn,msg:msg};
+
     inp.addEventListener('change',function(){
       var idx=S.photos.indexOf(i);
       if(inp.checked&&idx<0&&S.photos.length<3){S.photos.push(i);}
-      if(!inp.checked&&idx>=0){S.photos.splice(idx,1);}
+      if(!inp.checked&&idx>=0){S.photos.splice(idx,1);delete S.imgs[i];}
       save();render();
+    });
+    btn.addEventListener('click',function(){file.click();});
+    file.addEventListener('change',function(){
+      var f=file.files&&file.files[0];file.value='';
+      if(!f)return;
+      msg.textContent='Adding photo...';
+      shrink(f,function(err,url){
+        if(err){msg.textContent='Could not read that photo. Please try another one.';return;}
+        S.imgs[i]=url;msg.textContent='';save();render();
+      });
     });
   });
 
@@ -351,16 +406,20 @@ input[type=text]::placeholder{color:#7f88a8}
 
   function render(){
     // photos
-    var n=S.photos.length;
-    Array.prototype.forEach.call(picks.querySelectorAll('input'),function(inp){
-      var i=+inp.dataset.i,on=S.photos.indexOf(i)>=0;
-      inp.checked=on;
-      var block=!on&&n>=3;
-      inp.disabled=block||S.pwOk;
-      inp.closest('.pick').classList.toggle('dim',block);
+    var sel=S.photos.length,n=nPhotos();
+    rows.forEach(function(r,i){
+      var on=S.photos.indexOf(i)>=0,block=!on&&sel>=3,img=S.imgs[i];
+      r.inp.checked=on;
+      r.inp.disabled=block||S.pwOk;
+      r.lab.classList.toggle('dim',block);
+      r.shot.hidden=!on;
+      r.thumb.hidden=!img;
+      if(img){r.thumb.src=img;}
+      r.btn.textContent=img?'Replace photo':'Add photo';
+      r.btn.disabled=S.pwOk;
     });
-    $('count').textContent=n>=3?'All 3 photos taken. Have them ready to show a Game Master.':n+' of 3 photos taken.';
-    $('chipPhotos').textContent='📸 '+n+'/3';
+    $('count').textContent=n>=3?'All 3 photos added.':n+' of 3 photos added.';
+    $('chipPhotos').textContent='\uD83D\uDCF8 '+n+'/3';
     $('chipPhotos').classList.toggle('on',n>=3);
     // password
     $('chipPw').textContent=S.pwOk?'🔓 Cracked':'🔐 Locked';
@@ -420,7 +479,7 @@ input[type=text]::placeholder{color:#7f88a8}
   function checkPw(){
     var v=$('pw').value.replace(/\s+/g,'').toUpperCase().replace(/^SJ/,'');
     var fb=$('pwFb');
-    if(v===PW&&S.photos.length>=3){
+    if(v===PW&&nPhotos()>=3){
       S.pwOk=true;save();
       fb.className='fb good';fb.textContent='Mission passed.';
       render();      // locks the inputs and records the finish time
@@ -436,18 +495,31 @@ input[type=text]::placeholder{color:#7f88a8}
     S.photos.slice().sort(function(a,b){return a-b;}).forEach(function(idx,n){
       var li=document.createElement('li');
       var d=document.createElement('span');d.className='dia';d.setAttribute('aria-hidden','true');d.textContent=n+1;
+      var wrap=document.createElement('div');wrap.className='pi';
       var t=document.createElement('span');t.textContent=PHOTOS[idx];
-      li.appendChild(d);li.appendChild(t);list.appendChild(li);
+      wrap.appendChild(t);
+      if(S.imgs[idx]){
+        var im=document.createElement('img');im.className='proof';im.src=S.imgs[idx];im.alt='Photo for: '+PHOTOS[idx];
+        im.addEventListener('click',function(){openLightbox(S.imgs[idx],im.alt);});
+        wrap.appendChild(im);
+      }
+      li.appendChild(d);li.appendChild(wrap);list.appendChild(li);
     });
     done.hidden=false;
     document.body.style.overflow='hidden';
     tick();
-    $('back').focus();
+    done.scrollTop=0;
+    $('back').focus({preventScroll:true});
   }
   function closeDone(){done.hidden=true;document.body.style.overflow='';$('reportBtn').focus();}
+  var lb=$('lightbox');
+  function openLightbox(src,alt){$('lbImg').src=src;$('lbImg').alt=alt||'Photo';lb.hidden=false;$('lbClose').focus();}
+  function closeLightbox(){lb.hidden=true;$('lbImg').removeAttribute('src');}
+  $('lbClose').addEventListener('click',closeLightbox);
+  lb.addEventListener('click',function(e){if(e.target===lb){closeLightbox();}});
   $('reportBtn').addEventListener('click',openDone);
   $('back').addEventListener('click',closeDone);
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!done.hidden){closeDone();}});
+  document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;if(!lb.hidden){closeLightbox();}else if(!done.hidden){closeDone();}});
 
   // Hidden reset: tap the timer chip 5 times quickly, then confirm
   var taps=[],resetTimer=0;
