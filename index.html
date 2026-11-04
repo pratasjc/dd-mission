@@ -61,9 +61,25 @@ button,input{font:inherit;color:inherit}
 .meta{margin:0;color:var(--muted);font-size:14px;line-height:1.3}
 .bubble{padding:24px 22px 10px;background:var(--ink2);
   clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0 calc(100% - 14px),0 14px)}
-.bubble h1{font-size:clamp(30px,8.5vw,38px);margin-bottom:6px}
-.bubble .event{color:var(--gold);margin-bottom:16px}
-.cmsg{min-height:1.6em;margin:14px 0 0;color:var(--muted);font-size:15px}
+.bubble h1{font-size:clamp(30px,8.5vw,38px);margin-bottom:12px}
+.bubble .lead{margin-bottom:18px}
+.bubble .kicker{margin:0 0 10px;color:var(--gold);font-size:14px;font-weight:500;letter-spacing:.03em}
+.steps{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:10px}
+.steps li{display:flex;gap:12px;align-items:center}
+.steps strong{font-weight:600}
+.dia{flex:none;width:28px;height:28px;display:grid;place-items:center;background:var(--gold);color:var(--ink);font:400 13px/1 var(--display);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.notice{margin:0 0 14px;padding:12px 14px;background:rgba(217,180,91,.10);border-left:3px solid var(--gold)}
+.notice p{margin:0}
+.notice .notice-label{margin-bottom:2px;color:var(--gold);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.cmsg{min-height:3.3em;margin:14px 0 0;color:var(--muted);font-size:15px;line-height:1.55}
+.cmsg.l1{color:var(--champ)}
+.cmsg.l2{color:#f2c36b}
+.cmsg.l3{color:#ff9b5e;font-weight:500;animation:shake .4s}
+.cmsg.l4{color:var(--red-lt);font-weight:600;animation:shake .4s}
+.cmsg.l5{color:var(--red-lt);font-weight:700;animation:shake .5s}
+.cmsg.l6{color:var(--gold);font-weight:600}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .msgbtns{display:grid;grid-template-columns:1fr 1.5fr;gap:12px;margin-top:6px}
 .brief:focus{outline:none}
 
@@ -75,6 +91,10 @@ button,input{font:inherit;color:inherit}
 .chip{display:flex;align-items:center;gap:6px;padding:4px 11px;border:1px solid var(--gold-dim);border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .chip.on{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:600}
 .reportrow{margin-top:10px}
+#chipTime{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.resetrow{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px}
+.resetrow span{flex:1}
+.btn.sm{width:auto;padding:8px 14px;font-size:15px}
 
 /* Buttons */
 .btn{display:block;width:100%;padding:13px 18px;border:0;border-radius:999px;background:var(--gold);color:var(--ink);font-weight:600;font-size:17px;cursor:pointer}
@@ -83,10 +103,6 @@ button,input{font:inherit;color:inherit}
 
 /* Content */
 .brief{padding:30px 20px 64px}
-.mission-list{margin:0 0 16px;padding:0;list-style:none}
-.mission-list li{padding:10px 0;border-top:1px solid rgba(217,180,91,.22)}
-.mission-list li:last-child{border-bottom:1px solid rgba(217,180,91,.22)}
-.warn{color:var(--muted)}
 .rule{height:14px;position:relative;margin:38px 0}
 .rule::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent)}
 .rule::after{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;background:var(--gold);transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 0 6px var(--ink)}
@@ -133,13 +149,16 @@ input[type=text]::placeholder{color:#7f88a8}
 .fb{min-height:1.6em;margin:12px 0 0;font-size:15px}
 .fb.bad{color:var(--red-lt)}
 .fb.good{color:var(--gold)}
-.foot{margin-top:34px;color:var(--muted);font-size:15px}
-.linkbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:14px}
+.reminder{margin-top:34px;padding:14px 16px;background:rgba(228,71,63,.16);border:1px solid rgba(255,125,116,.45);border-left:4px solid var(--red-lt)}
+.reminder p{margin:0;color:var(--red-lt);font-weight:500}
+.reminder .reminder-label{margin-bottom:4px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 
 /* Mission complete */
 .done{position:fixed;inset:0;z-index:60;overflow:auto;background:var(--ink);
   padding:calc(env(safe-area-inset-top,0px) + 28px) 24px calc(env(safe-area-inset-bottom,0px) + 28px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
+  display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.done>:first-child{margin-top:auto}
+.done>:last-child{margin-bottom:auto}
 .done.burst::before{bottom:-10%}
 .done>*{position:relative;width:100%;max-width:400px}
 .stamp{width:auto !important;font:400 clamp(34px,11vw,50px)/1.1 var(--display);color:var(--red-lt);border:4px double var(--red-lt);padding:12px 24px;transform:rotate(-5deg);animation:stampIn .5s cubic-bezier(.2,1.4,.4,1) both}
@@ -147,11 +166,15 @@ input[type=text]::placeholder{color:#7f88a8}
 .stats{display:grid;gap:8px;text-align:left;margin:6px 0;padding:14px 16px;background:var(--ink2);border:1px solid var(--gold-dim)}
 .stats div{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
 .stats span:first-child{color:var(--muted)}
-.done .who{text-align:center;flex:none}
+.picked{text-align:left}
+.picked-label{margin:0 0 10px;color:var(--gold);font-size:14px;font-weight:500;letter-spacing:.03em}
+.picked ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.picked li{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.45}
+.picked .dia{width:24px;height:24px;font-size:12px}
 .done .stamp{margin-bottom:10px}
 
 @media (prefers-reduced-motion:reduce){
-  .stamp{animation:none}
+  .stamp,.cmsg{animation:none !important}
 }
 </style>
 </head>
@@ -170,14 +193,16 @@ input[type=text]::placeholder{color:#7f88a8}
       </div>
       <article class="bubble">
         <h1 id="callTitle">Welcome, Agent.</h1>
-        <p class="event">SJ Infra Dinner &amp; Dance 2026</p>
-        <p>Intelligence has identified you as a suitable candidate for a special operation. Your mission tonight is simple, yet critical:</p>
-        <ul class="mission-list">
-          <li>Mission 1: Photo challenge</li>
-          <li>Mission 2: Crack the password</li>
-        </ul>
-        <p>Complete both assignments and report to the Game Masters to verify your success. A reward awaits all successful agents.</p>
-        <p class="warn">But be warned: rewards are limited, and time is running out.</p>
+        <p class="lead">Intelligence has identified you as a suitable candidate for a special operation.</p>
+        <p class="kicker">Your mission tonight</p>
+        <ol class="steps">
+          <li><span class="dia" aria-hidden="true">1</span><span>Complete <strong>TWO</strong> classified missions</span></li>
+          <li><span class="dia" aria-hidden="true">2</span><span>Report to the Game Masters for verification</span></li>
+        </ol>
+        <div class="notice" role="note">
+          <p class="notice-label">Notice</p>
+          <p>Rewards are limited and the clock is ticking. Good luck!</p>
+        </div>
       </article>
       <p id="callMsg" class="cmsg" role="status"></p>
       <div class="msgbtns">
@@ -195,6 +220,11 @@ input[type=text]::placeholder{color:#7f88a8}
       </div>
       <div class="reportrow" id="reportRow" hidden>
         <button class="btn" id="reportBtn" type="button">Report to Game Master</button>
+      </div>
+      <div class="resetrow" id="resetRow" hidden>
+        <span>Reset all progress on this phone?</span>
+        <button class="btn ghost sm" id="resetNo" type="button">Cancel</button>
+        <button class="btn sm" id="resetYes" type="button">Reset</button>
       </div>
     </div>
 
@@ -233,15 +263,17 @@ input[type=text]::placeholder{color:#7f88a8}
           <p>Take the first letter of each answer, in order from 1 to 6. The password is SJ followed by those 6 letters.</p>
           <div class="pwrow">
             <span class="pre" aria-hidden="true">SJ</span>
-            <input type="text" id="pw" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="6 letters" aria-label="Password letters after SJ">
+            <input type="text" id="pw" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="6 letters" aria-label="Password letters after SJ">
           </div>
           <button class="btn" id="pwBtn" type="button">Check password</button>
           <p class="fb" id="pwFb" role="status"></p>
         </div>
       </section>
 
-      <p class="foot">Report to a Game Master as soon as both missions are done. Rewards are limited.</p>
-      <p class="foot" id="resetWrap" hidden><button class="linkbtn" id="reset" type="button">Reset progress on this phone</button></p>
+      <div class="reminder" role="note">
+        <p class="reminder-label">Reminder</p>
+        <p>Report to a Game Master as soon as both missions are done. Rewards are limited.</p>
+      </div>
     </main>
   </div>
 </div>
@@ -252,9 +284,11 @@ input[type=text]::placeholder{color:#7f88a8}
   <p>Show this screen to a Game Master to collect your reward. Have your 3 photos ready in your gallery.</p>
   <div class="stats">
     <div><span>Time on mission</span><span id="dElapsed">00:00</span></div>
-    <div><span>Time now</span><span id="dClock">00:00:00</span></div>
   </div>
-  <input type="text" id="agent" class="who" maxlength="30" placeholder="Your name (optional)" aria-label="Your name">
+  <div class="picked">
+    <p class="picked-label">Photo missions chosen</p>
+    <ol id="dPicks"></ol>
+  </div>
   <button class="btn ghost" id="back" type="button">Back to briefing</button>
 </div>
 
@@ -277,7 +311,7 @@ input[type=text]::placeholder{color:#7f88a8}
     ['🇰🇷','K-drama / K-movie','Which Korean drama tells the story of a South Korean heiress who accidentally lands in North Korea after a paragliding accident?'],
     ['🌍','International cinema','Guess the movie title based on the emojis.','🚢 👩‍❤️‍👨 🧊 🌊']
   ];
-  function fresh(){return {accepted:false,start:0,photos:[],pwOk:false,doneAt:0,agent:''};}
+  function fresh(){return {accepted:false,start:0,photos:[],pwOk:false,doneAt:0};}
   var S=fresh();
   try{var raw=localStorage.getItem(KEY);if(raw){S=Object.assign(fresh(),JSON.parse(raw));}}catch(e){}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -314,7 +348,6 @@ input[type=text]::placeholder{color:#7f88a8}
   });
 
   function mmss(ms){var s=Math.max(0,Math.floor(ms/1000));var m=Math.floor(s/60);s=s%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
-  function hms(d){function p(n){return (n<10?'0':'')+n;}return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
 
   function render(){
     // photos
@@ -323,7 +356,7 @@ input[type=text]::placeholder{color:#7f88a8}
       var i=+inp.dataset.i,on=S.photos.indexOf(i)>=0;
       inp.checked=on;
       var block=!on&&n>=3;
-      inp.disabled=block;
+      inp.disabled=block||S.pwOk;
       inp.closest('.pick').classList.toggle('dim',block);
     });
     $('count').textContent=n>=3?'All 3 photos taken. Have them ready to show a Game Master.':n+' of 3 photos taken.';
@@ -346,7 +379,6 @@ input[type=text]::placeholder{color:#7f88a8}
     var el=mmss(end-S.start);
     $('chipTime').textContent='⏱ '+el;
     $('dElapsed').textContent=el;
-    $('dClock').textContent=hms(new Date());
   }
   setInterval(tick,1000);
 
@@ -360,8 +392,27 @@ input[type=text]::placeholder{color:#7f88a8}
     S.accepted=true;S.start=Date.now();save();
     showBrief(true);render();
   });
+  var declines=0;
+  var STERN=[
+    'Declining isn\u2019t an option, Agent. Tap Accept mission.',
+    'Agent, this is not a request. Tap Accept mission.',
+    'We know exactly which table you\u2019re sitting at. Accept the mission.',
+    'Final warning, Agent. Accept the mission. Now.',
+    'Mission Control is losing patience. ACCEPT. THE. MISSION.',
+    'The Decline button has been disabled. Only one option remains, Agent.'
+  ];
+  function resetDecline(){
+    declines=0;
+    var m=$('callMsg');m.textContent='';m.className='cmsg';
+    $('decline').disabled=false;
+  }
   $('decline').addEventListener('click',function(){
-    $('callMsg').textContent='Declining isn\u2019t an option, Agent. Tap Accept mission.';
+    declines=Math.min(declines+1,STERN.length);
+    var m=$('callMsg');
+    m.className='cmsg';void m.offsetWidth;   // restart the shake each tap
+    m.className='cmsg l'+declines;
+    m.textContent=STERN[declines-1];
+    if(declines===STERN.length){$('decline').disabled=true;$('accept').focus();}
   });
 
   $('pwBtn').addEventListener('click',checkPw);
@@ -369,19 +420,25 @@ input[type=text]::placeholder{color:#7f88a8}
   function checkPw(){
     var v=$('pw').value.replace(/\s+/g,'').toUpperCase().replace(/^SJ/,'');
     var fb=$('pwFb');
-    if(v.length<6){fb.className='fb bad';fb.textContent='Enter all 6 letters after SJ.';return;}
-    if(v===PW){
+    if(v===PW&&S.photos.length>=3){
       S.pwOk=true;save();
-      fb.className='fb good';
-      fb.textContent=S.photos.length>=3?'Access granted.':'Access granted. Now finish 3 photo missions to unlock your report.';
-      render();
+      fb.className='fb good';fb.textContent='Mission passed.';
+      render();      // locks the inputs and records the finish time
+      openDone();
     }else{
       fb.className='fb bad';
-      fb.textContent='Access denied. Take the first letter of each answer, in order from 1 to 6.';
+      fb.textContent='Access denied. Mission incomplete.';
     }
   }
 
   function openDone(){
+    var list=$('dPicks');list.innerHTML='';
+    S.photos.slice().sort(function(a,b){return a-b;}).forEach(function(idx,n){
+      var li=document.createElement('li');
+      var d=document.createElement('span');d.className='dia';d.setAttribute('aria-hidden','true');d.textContent=n+1;
+      var t=document.createElement('span');t.textContent=PHOTOS[idx];
+      li.appendChild(d);li.appendChild(t);list.appendChild(li);
+    });
     done.hidden=false;
     document.body.style.overflow='hidden';
     tick();
@@ -391,22 +448,35 @@ input[type=text]::placeholder{color:#7f88a8}
   $('reportBtn').addEventListener('click',openDone);
   $('back').addEventListener('click',closeDone);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!done.hidden){closeDone();}});
-  $('agent').addEventListener('input',function(){S.agent=$('agent').value;save();});
 
-  $('reset').addEventListener('click',function(){
+  // Hidden reset: tap the timer chip 5 times quickly, then confirm
+  var taps=[],resetTimer=0;
+  function hideReset(){$('resetRow').hidden=true;clearTimeout(resetTimer);}
+  $('chipTime').addEventListener('click',function(){
+    var now=Date.now();
+    taps=taps.filter(function(t){return now-t<4000;});
+    taps.push(now);
+    if(taps.length>=5){
+      taps=[];
+      $('resetRow').hidden=false;
+      clearTimeout(resetTimer);
+      resetTimer=setTimeout(hideReset,8000);
+    }
+  });
+  $('resetNo').addEventListener('click',hideReset);
+  $('resetYes').addEventListener('click',function(){
+    hideReset();
     S=fresh();
     try{localStorage.removeItem(KEY);}catch(e){}
-    $('pw').value='';$('pwFb').textContent='';$('pwFb').className='fb';$('agent').value='';
-    $('callMsg').textContent='';
+    $('pw').value='';$('pwFb').textContent='';$('pwFb').className='fb';
+    resetDecline();
     bar.hidden=true;brief.hidden=true;done.hidden=true;call.hidden=false;
     document.body.style.overflow='';
     render();window.scrollTo(0,0);
   });
 
   // restore
-  $('agent').value=S.agent||'';
-  if(/[?&]reset/.test(location.search)){$('resetWrap').hidden=false;}
-  if(S.pwOk){$('pw').value=PW;$('pwFb').className='fb good';$('pwFb').textContent='Access granted.';}
+  if(S.pwOk){$('pw').value=PW;$('pwFb').className='fb good';$('pwFb').textContent='Mission passed.';}
   if(S.accepted){showBrief(false);}
   render();
 })();
